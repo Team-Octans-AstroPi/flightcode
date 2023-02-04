@@ -109,7 +109,7 @@ def isNightPhoto(imagePath):
             image = exif.Image(image_file)
         
         # Add result in 'image_description' EXIF tag
-        image.make = "Octans Astro Pi (RaspberryPi4B)" # easter egg ;)
+        image.make = "Octans Astro Pi (RaspberryPiHQ)" # easter egg ;)
         logger.info(f"{imagePath} - Day/Night/Twilight Result: " + str(result))
         image.image_description = str(result)
         
