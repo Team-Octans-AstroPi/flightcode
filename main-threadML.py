@@ -208,21 +208,25 @@ photosCnt = 0
 
 analysisCnt = 0
 FIFObuffer = []
+lock = threading.Lock()
 
 def analysisThread():
     global analysisCnt
+    global FIFObuffer
     while True:
         try:
             if len(FIFObuffer) != 0:
                 analysisCnt += 1
-                filename = FIFObuffer[0]
+                filename = ""
+                with lock:
+                    filename = FIFObuffer[0]
                 if not isNightPhoto(filename): # if it is not a night photo (if it is, it is automatically deleted)
                     logger.info(f"{filename} - Night not detected")
                     classifyClouds(filename)
                 else:
                     logger.info(f"{filename} - Night detected, photo deleted.")
-                
-                FIFObuffer.remove(filename)
+                with lock:
+                    FIFObuffer.remove(filename)
         except Exception as e:
             # Log exception, save debug info (number of photos taken, ).
             logger.debug(f"mlanalysisd T:{time()} deltaT:{time()-start_time.second} P:{photosCnt: .0f}")
@@ -242,7 +246,8 @@ while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 15
 
         filename = f"{base_folder}/OCTANS_{photosCnt}.jpg"
         capture(camera, filename) # capture photo
-        FIFObuffer.append(filename) # add to ml analysis thread
+        with lock:
+            FIFObuffer.append(filename) # add to ml analysis thread
 
         analysisTime = round(time() - photoTime, 2) # time taken by ML analysis
         if 2.4-analysisTime > 0: # if time didn't pass
