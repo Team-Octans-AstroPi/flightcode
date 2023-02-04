@@ -7,6 +7,7 @@ from orbit import ISS
 import exif # saving ML output data in EXIF
 import cv2  # extract clouds using opencv
 import numpy as np # used by opencv
+import threading
 
 # Coral ML:
 from PIL import Image                                   # resize images
@@ -203,10 +204,35 @@ def classifyClouds(imagePath):
 # initialize camera
 camera = PiCamera()
 camera.resolution=(2561, 1920)
-
 photosCnt = 0
 
-while (datetime.now() < start_time + timedelta(minutes=3)) and photosCnt <= 1500:
+analysisCnt = 0
+FIFObuffer = []
+
+def analysisThread():
+    global analysisCnt
+    while True:
+        try:
+            if len(FIFObuffer) != 0:
+                analysisCnt += 1
+                filename = FIFObuffer[0]
+                if not isNightPhoto(filename): # if it is not a night photo (if it is, it is automatically deleted)
+                    logger.info(f"{filename} - Night not detected")
+                    classifyClouds(filename)
+                else:
+                    logger.info(f"{filename} - Night detected, photo deleted.")
+                
+                FIFObuffer.remove(filename)
+        except Exception as e:
+            # Log exception, save debug info (number of photos taken, ).
+            logger.debug(f"mlanalysisd T:{time()} deltaT:{time()-start_time.second} P:{photosCnt: .0f}")
+            logger.error(e)
+            pass
+
+x = threading.Thread(target=analysisThread, daemon=True)
+x.start()
+
+while (datetime.now() < start_time + timedelta(minutes=1)) and photosCnt <= 1500:
     """
         Take photos every 2.4 seconds, analyse photos using Coral (and delete them if it is a night photo), log exceptions if there are any.
     """
@@ -216,11 +242,7 @@ while (datetime.now() < start_time + timedelta(minutes=3)) and photosCnt <= 1500
 
         filename = f"{base_folder}/OCTANS_{photosCnt}.jpg"
         capture(camera, filename) # capture photo
-        if not isNightPhoto(filename): # if it is not a night photo (if it is, it is automatically deleted)
-            logger.info(f"{filename} - Night not detected")
-            classifyClouds(filename)
-        else:
-            logger.info(f"{filename} - Night detected, photo deleted.")
+        FIFObuffer.append(filename) # add to ml analysis thread
 
         analysisTime = round(time() - photoTime, 2) # time taken by ML analysis
         if 2.4-analysisTime > 0: # if time didn't pass
@@ -232,6 +254,6 @@ while (datetime.now() < start_time + timedelta(minutes=3)) and photosCnt <= 1500
         logger.error(e)
         pass
 
-
 # closing gracefully
+logger.info(f"Closing program. {photosCnt} photos taken, {analysisCnt} ML-analysed.")
 camera.close()
