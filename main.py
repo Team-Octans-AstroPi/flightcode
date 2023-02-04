@@ -206,7 +206,7 @@ camera.resolution=(2561, 1920)
 
 photosCnt = 0
 
-while (datetime.now() < start_time + timedelta(minutes=3)) and photosCnt <= 1500:
+while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 1500:
     """
         Take photos every 2.4 seconds, analyse photos using Coral (and delete them if it is a night photo), log exceptions if there are any.
     """
