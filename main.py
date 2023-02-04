@@ -224,7 +224,7 @@ while (datetime.now() < start_time + timedelta(minutes=3)) and photosCnt <= 1500
 
         analysisTime = round(time() - photoTime, 2) # time taken by ML analysis
         if 2.4-analysisTime > 0: # if time didn't pass
-            sleep(2.4-photoTime)
+            sleep(2.4-analysisTime)
 
     except Exception as e:
         # Log exception, save debug info (number of photos taken, ).
