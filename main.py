@@ -100,7 +100,7 @@ def isNightPhoto(imagePath):
         Else, save image, with exif data included.
     """
 
-    if result == "night":
+    if str(result).split()[0]=="night":
         Path(imagePath, missing_ok=True).unlink() # remove photo
         return True
     else:
