@@ -83,7 +83,7 @@ def isNightPhoto(imagePath):
     size = common.input_size(interpreter)
 
     # convert to grayscale (L) to ignore changes in color, then convert back to RGB for compatibility reasons
-    img = clouds.convert('L').convert('RGB').resize(size, Image.ANTIALIAS) 
+    img = Image.open(imagePath).convert('RGB').resize(size, Image.ANTIALIAS) 
 
     common.set_input(interpreter, img)
     interpreter.invoke()
