@@ -206,7 +206,7 @@ camera.resolution=(2561, 1920)
 
 photosCnt = 0
 
-while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 1500:
+while (datetime.now() < start_time + timedelta(minutes=3)) and photosCnt <= 1500:
     """
         Take photos every 2.4 seconds, analyse photos using Coral (and delete them if it is a night photo), log exceptions if there are any.
     """
@@ -217,19 +217,21 @@ while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 15
         filename = f"{base_folder}/OCTANS_{photosCnt}.jpg"
         capture(camera, filename) # capture photo
         if not isNightPhoto(filename): # if it is not a night photo (if it is, it is automatically deleted)
+            logger.info(f"{filename} - Night not detected")
             classifyClouds(filename)
+        else:
+            logger.info(f"{filename} - Night detected, photo deleted.")
 
         analysisTime = round(time() - photoTime, 2) # time taken by ML analysis
         if 2.4-analysisTime > 0: # if time didn't pass
-            logger.info(f"{filename} - Night not detected")
             sleep(2.4-photoTime)
-        else:
-            logger.info(f"{filename} - Night detected, photo deleted.")
+
     except Exception as e:
         # Log exception, save debug info (number of photos taken, ).
         logger.debug(f"T:{time()} deltaT:{time()-start_time.second} P:{photosCnt: .0f}")
         logger.error(e)
         pass
+
 
 # closing gracefully
 camera.close()
