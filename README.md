@@ -9,8 +9,13 @@ Then, they are classified using the Coral USB Accelerator. If they are made duri
 
 ## Photo EXIF Tags:
 Camera brand: `make`
+
 Camera model: `model`
+
 Software used: `software`
+
 GPS: `gps_latitude`, `gps_longitude`
+
 Day/Night/Twilight: `image_description`
+
 Clouds: `user_comment`
