@@ -37,7 +37,7 @@ def capture(camera, imagePath):
     # the function found in the Phase 2 Guide, modified to return the captured image
 
     # log that we're capturing an image
-    logger.info(f"Capturing image at path: {imagePath}")
+    logger.info(f"{imagePath} - Capturing image")
 
     """Use `camera` to capture an `image` file with lat/long EXIF data."""
     point = ISS.coordinates()
@@ -59,6 +59,7 @@ def capture(camera, imagePath):
     something goes wrong within the analysis code.
     """
     camera.capture(imagePath)
+    logger.info(f"{imagePath} - Captured image")
 
 def isNightPhoto(imagePath):
     """
@@ -83,7 +84,7 @@ def isNightPhoto(imagePath):
     size = common.input_size(interpreter)
 
     # convert to grayscale (L) to ignore changes in color, then convert back to RGB for compatibility reasons
-    img = Image.open(imagePath).convert('RGB').resize(size, Image.ANTIALIAS) 
+    img = Image.open(imagePath).convert('RGB').resize(size, Image.Resampling.LANCZOS) 
 
     common.set_input(interpreter, img)
     interpreter.invoke()
@@ -109,6 +110,7 @@ def isNightPhoto(imagePath):
         
         # Add result in 'image_description' EXIF tag
         image.make = "Octans Astro Pi (RaspberryPi4B)" # easter egg ;)
+        logger.info(f"{imagePath} - Day/Night/Twilight Result: " + str(result))
         image.image_description = str(result)
         
         # Save image
@@ -125,7 +127,7 @@ def classifyClouds(imagePath):
     """
 
     # log that we're starting the classification procedure
-    logger.info(f"Classifying clouds in image at path: {imagePath}")
+    logger.info(f"{imagePath} - CloudClassif")
 
     """
     HSV-based Cloud Extraction using a Color Interval
@@ -170,7 +172,7 @@ def classifyClouds(imagePath):
     size = common.input_size(interpreter)
 
     # convert to grayscale (L) to ignore changes in color, then convert back to RGB for compatibility reasons
-    img = clouds.convert('L').convert('RGB').resize(size, Image.ANTIALIAS) 
+    img = clouds.convert('L').convert('RGB').resize(size, Image.Resampling.LANCZOS) 
 
     common.set_input(interpreter, img)
     interpreter.invoke()
@@ -191,6 +193,7 @@ def classifyClouds(imagePath):
     
     # Add result in 'user_comment' EXIF tag
     image.user_comment = str(result)
+    logger.info(f"{imagePath} - CloudClassif Result: " + str(result))
     image.software = "0C74N5 Cloud Classification" # easter egg ;)
     
     # Save image
@@ -218,10 +221,13 @@ while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 15
 
         analysisTime = round(time() - photoTime, 2) # time taken by ML analysis
         if 2.4-analysisTime > 0: # if time didn't pass
+            logger.info(f"{filename} - Night not detected")
             sleep(2.4-photoTime)
+        else:
+            logger.info(f"{filename} - Night detected, photo deleted.")
     except Exception as e:
         # Log exception, save debug info (number of photos taken, ).
-        logger.debug(f"[T:{time()} deltaT:{time()-start_time.second} P:{photosCnt: .0f}]")
+        logger.debug(f"T:{time()} deltaT:{time()-start_time.second} P:{photosCnt: .0f}")
         logger.error(e)
         pass
 
