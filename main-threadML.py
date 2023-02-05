@@ -216,9 +216,10 @@ def analysisThread():
     while True:
         try:
             if len(FIFObuffer) != 0:
-                analysisCnt += 1
+                
                 filename = ""
                 with lock:
+                    analysisCnt += 1
                     filename = FIFObuffer[0]
                 if not isNightPhoto(filename): # if it is not a night photo (if it is, it is automatically deleted)
                     logger.info(f"{filename} - Night not detected")
@@ -260,5 +261,6 @@ while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 15
         pass
 
 # closing gracefully
-logger.info(f"Closing program. {photosCnt} photos taken, {analysisCnt} ML-analysed.")
+with lock:
+    logger.info(f"Closing program. {photosCnt} photos taken, {analysisCnt} ML-analysed.")
 camera.close()
