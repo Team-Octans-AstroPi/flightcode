@@ -208,7 +208,7 @@ photosCnt = 0
 
 while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 1500:
     """
-        Take photos every 2.4 seconds, analyse photos using Coral (and delete them if it is a night photo), log exceptions if there are any.
+        Take photos every 7.2 seconds, analyse photos using Coral (and delete them if it is a night photo), log exceptions if there are any.
     """
     try:
         photoTime = round(time(), 3) # save starting photo time to sleep for only as much time as needed (ML analysis might be slower than expected)
@@ -223,8 +223,8 @@ while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 15
             logger.info(f"{filename} - Night detected, photo deleted.")
 
         analysisTime = round(time() - photoTime, 2) # time taken by ML analysis
-        if 2.4-analysisTime > 0: # if time didn't pass
-            sleep(2.4-analysisTime)
+        if 7.2-analysisTime > 0: # if time didn't pass
+            sleep(7.2-analysisTime)
 
     except Exception as e:
         # Log exception, save debug info (number of photos taken, time when exception occured).
