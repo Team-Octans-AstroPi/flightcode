@@ -58,7 +58,7 @@ def capture(camera, imagePath):
     the Coral ML analysis in order to prvent data loss if
     something goes wrong within the analysis code.
     """
-    camera.capture(imagePath)
+    camera.capture(str(base_folder)+"/"+imagePath)
     logger.info(f"{imagePath} - Captured image")
 
 def isNightPhoto(imagePath):
@@ -84,7 +84,7 @@ def isNightPhoto(imagePath):
     size = common.input_size(interpreter)
 
     # convert to grayscale (L) to ignore changes in color, then convert back to RGB for compatibility reasons
-    img = Image.open(imagePath).convert('RGB').resize(size, Image.Resampling.LANCZOS) 
+    img = Image.open(str(base_folder)+"/"+str(imagePath)).convert('RGB').resize(size, Image.Resampling.LANCZOS) 
 
     common.set_input(interpreter, img)
     interpreter.invoke()
@@ -102,10 +102,10 @@ def isNightPhoto(imagePath):
     """
 
     if str(result).split()[0]=="night":
-        Path(imagePath, missing_ok=True).unlink() # remove photo
+        Path(str(base_folder)+"/"+str(imagePath), missing_ok=True).unlink() # remove photo
         return True
     else:
-        with open(f"{imagePath}", 'rb') as image_file:
+        with open(f"{base_folder}/{imagePath}", 'rb') as image_file:
             image = exif.Image(image_file)
         
         # Add result in 'image_description' EXIF tag
@@ -114,7 +114,7 @@ def isNightPhoto(imagePath):
         image.image_description = str(result)
         
         # Save image
-        with open(f"{imagePath}", 'wb') as saved_image:
+        with open(f"{base_folder}/{imagePath}", 'wb') as saved_image:
             saved_image.write(image.get_file())
         return False
 
@@ -144,7 +144,7 @@ def classifyClouds(imagePath):
     and used only for cloud classsification.
     """
 
-    img = cv2.cvtColor(cv2.imread(imagePath), cv2.COLOR_BGR2HSV) # convert image to HSV
+    img = cv2.cvtColor(cv2.imread(str(base_folder)+"/"+str(imagePath)), cv2.COLOR_BGR2HSV) # convert image to HSV
 
     # color intervals
     cloudsUp = np.array([179, 80, 255])
@@ -188,7 +188,7 @@ def classifyClouds(imagePath):
         Save image, with exif
     """
 
-    with open(f"{imagePath}", 'rb') as image_file:
+    with open(f"{base_folder}/{imagePath}", 'rb') as image_file:
         image = exif.Image(image_file)
     
     # Add result in 'user_comment' EXIF tag
@@ -197,7 +197,7 @@ def classifyClouds(imagePath):
     image.software = "0C74N5 Cloud Classification" # easter egg ;)
     
     # Save image
-    with open(f"{imagePath}", 'wb') as saved_image:
+    with open(f"{base_folder}/{imagePath}", 'wb') as saved_image:
         saved_image.write(image.get_file())
 
 # initialize camera
@@ -214,7 +214,7 @@ while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 15
         photoTime = round(time(), 3) # save starting photo time to sleep for only as much time as needed (ML analysis might be slower than expected)
         photosCnt = photosCnt+1
 
-        filename = f"{base_folder}/OCTANS_{photosCnt}.jpg"
+        filename = f"OCTANS_{photosCnt}.jpg"
         capture(camera, filename) # capture photo
         if not isNightPhoto(filename): # if it is not a night photo (if it is, it is automatically deleted)
             logger.info(f"{filename} - Night not detected")
@@ -227,7 +227,7 @@ while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 15
             sleep(2.4-analysisTime)
 
     except Exception as e:
-        # Log exception, save debug info (number of photos taken, ).
+        # Log exception, save debug info (number of photos taken, time when exception occured).
         logger.debug(f"T:{time()} deltaT:{time()-start_time.second} P:{photosCnt: .0f}")
         logger.error(e)
         pass
