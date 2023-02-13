@@ -17,7 +17,7 @@ from tflite_runtime import interpreter
 
 start_time = datetime.now()
 base_folder = Path(__file__).parent.resolve()
-logfile(base_folder/"events.log") #, maxBytes=50000000, backupCount=1) # the logger files shouldn't take more than ... megabytes.
+logfile(base_folder/"events.log", maxBytes=5243000, backupCount=1) # the logger files shouldn't take more than 5 MB.
 
 def convert(angle):
     # Source: Fuction borrowed from Phase 2 guide
