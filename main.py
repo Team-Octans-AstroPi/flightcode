@@ -202,7 +202,7 @@ def classifyClouds(imagePath):
 
 # initialize camera
 camera = PiCamera()
-camera.resolution=(2561, 1920)
+camera.resolution=(2048, 1080) # 2K resolution
 
 photosCnt = 0
 
