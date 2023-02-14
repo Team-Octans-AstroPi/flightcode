@@ -75,8 +75,8 @@ def isNightPhoto(imagePath):
     Source: Modified code from Image classification with Google Coral tutorial on projects.raspberrypi.org
     """
     script_dir = Path(__file__).parent.resolve()
-    model_file = script_dir/'daynightModel.tflite'
-    label_file = script_dir/'daynightLabels.txt'
+    model_file = script_dir/models/'octansDayNightIR.tflite'
+    label_file = script_dir/models/'dayNightLabels.txt'
 
     interpreter = make_interpreter(f"{model_file}")
     interpreter.allocate_tensors()
@@ -101,10 +101,7 @@ def isNightPhoto(imagePath):
         Else, save image, with exif data included.
     """
 
-    if str(result).split()[0]=="night":
-        Path(str(base_folder)+"/"+str(imagePath), missing_ok=True).unlink() # remove photo
-        return True
-    else:
+    if (str(result).split()[0] == "day" || str(result).split()[0] == "twilight"):
         with open(f"{base_folder}/{imagePath}", 'rb') as image_file:
             image = exif.Image(image_file)
         
@@ -117,6 +114,10 @@ def isNightPhoto(imagePath):
         with open(f"{base_folder}/{imagePath}", 'wb') as saved_image:
             saved_image.write(image.get_file())
         return False
+    # If photo is taken at night time, we delete it
+    else:
+        Path(str(base_folder)+"/"+str(imagePath), missing_ok=True).unlink() # remove photo
+        return True
 
 def classifyClouds(imagePath):
     """
@@ -163,8 +164,8 @@ def classifyClouds(imagePath):
     Source: Modified code from Image classification with Google Coral tutorial on projects.raspberrypi.org
     """
     script_dir = Path(__file__).parent.resolve()
-    model_file = script_dir/'cloudModel.tflite'
-    label_file = script_dir/'cloudLabels.txt'
+    model_file = script_dir/models/'octansCloudModel.tflite'
+    label_file = script_dir/models/'cloudLabels.txt'
 
     interpreter = make_interpreter(f"{model_file}")
     interpreter.allocate_tensors()
