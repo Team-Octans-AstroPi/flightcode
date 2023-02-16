@@ -207,9 +207,9 @@ camera.resolution=(1440, 1080) # downscaled resolution proportional to the camer
 
 photosCnt = 0
 
-while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 1300:
+while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 1500:
     """
-        Take photos every 8.3 seconds, analyse photos using Coral (and delete them if it is a night photo), log exceptions if there are any.
+        Take photos every 7.2 seconds, analyse photos using Coral (and delete them if it is a night photo), log exceptions if there are any.
     """
     try:
         photoTime = round(time(), 3) # save starting photo time to sleep for only as much time as needed (ML analysis might be slower than expected)
@@ -224,8 +224,8 @@ while (datetime.now() < start_time + timedelta(minutes=178)) and photosCnt <= 13
             logger.info(f"{filename} - Night detected, photo ignored.")
 
         analysisTime = round(time() - photoTime, 2) # time taken by ML analysis
-        if 8.3-analysisTime > 0: # if time didn't pass
-            sleep(8.3-analysisTime)
+        if 7.2-analysisTime > 0: # if time didn't pass
+            sleep(7.2-analysisTime)
 
     except Exception as e:
         # Log exception, save debug info (number of photos taken, time when exception occured).
