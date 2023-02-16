@@ -114,9 +114,21 @@ def isNightPhoto(imagePath):
         with open(f"{base_folder}/{imagePath}", 'wb') as saved_image:
             saved_image.write(image.get_file())
         return False
-    # If photo is taken at night time, we delete it
+        
+    # If photo is taken at night time, we ignore it
     else:
-        #Path(str(base_folder)+"/"+str(imagePath), missing_ok=True).unlink() # remove photo
+        with open(f"{base_folder}/{imagePath}", 'rb') as image_file:
+            image = exif.Image(image_file)
+        
+        # Add result in 'image_description' EXIF tag
+        image.make = "Octans Astro Pi (RaspberryPiHQ)" # easter egg ;)
+        logger.info(f"{imagePath} - Day/Night/Twilight Result: " + str(result))
+        image.image_description = str(result)
+        
+        # Save image
+        with open(f"{base_folder}/{imagePath}", 'wb') as saved_image:
+            saved_image.write(image.get_file())
+
         return True
 
 def classifyClouds(imagePath):
