@@ -20,7 +20,7 @@ Day/Night/Twilight: `image_description`
 
 Clouds: `user_comment`
 
-## Before-flight Test results
+## Before-flight test results
 The `main.py` program was tested by placing the Raspberry Pi HQ Camera in front of a screen, playing a video with IR Photos from the Raspberry Pi Foundation's Flickr.
 - 1484 photos at 1440x1080 resolution
 - less than 1 GB of memory occupied, including the source code, log file, and photos
