@@ -1,5 +1,5 @@
 # Flightcode
-The code that ran during AstroPi Phase 3.
+The code that ran during 2022-2023 [Astro Pi Mission Space Lab](https://astro-pi.org/mission-space-lab/) Phase 3.
 
 `main.py` is the normal code, which ran on the ISS.
 `main-threadML.py` is a modified version of `main.py` that uses a separate thread to do the Coral ML classifications. This eliminates the impact on the rate at which photos are taken.
