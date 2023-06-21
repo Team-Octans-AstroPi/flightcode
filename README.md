@@ -30,6 +30,7 @@ The `main.py` program was tested by placing the Raspberry Pi HQ Camera in front 
 - no errors were found in the log
 
 Program flight with detected day/night/twilight:
-![Image that shows the ISS flight path. The ISS went over a variety of places, including Sahara.](https://github.com/Team-Octans-AstroPi/flightcode/assets/80255379/85b525f8-9fa7-4c5f-af9f-8bbd7e6c5295)
+![Image that shows the ISS flight path. The ISS went over a variety of places, including Sahara.](https://github.com/Team-Octans-AstroPi/flightcode/assets/80255379/28c90ce7-a82a-4310-9fdc-a9e0fccd42b5)
+
 
 
