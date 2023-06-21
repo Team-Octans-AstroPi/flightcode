@@ -1,7 +1,7 @@
 # Flightcode
 The code that ran during AstroPi Phase 3.
 
-`main.py` is the normal code.
+`main.py` is the normal code, which ran on the ISS.
 `main-threadML.py` is a modified version of `main.py` that uses a separate thread to do the Coral ML classifications. This eliminates the impact on the rate at which photos are taken.
 
 Photos are saved first (with their coordinates in EXIF), before being analysed by Coral. This is to ensure data is saved even if an error occurs in the ML code.
