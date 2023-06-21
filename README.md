@@ -22,7 +22,7 @@ The `main.py` program was tested by placing the Raspberry Pi HQ Camera in front 
 - program stopped after 2h 59 min
 - no errors were found in the log
 
-## Flight results:
+## Flight results
 - 1483 photos at 1440x1080 resolution
 - less than 1 GB of memory occupied, including the source code, log files, and photos
 - 54% accuracy for the tested clouds model
